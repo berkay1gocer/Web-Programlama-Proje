@@ -15,7 +15,7 @@ namespace odev3.Controllers
             return View();
         }
 
-        public async Task<IActionResult> UyeOl(Kullanici k)
+        public async Task<IActionResult> UyeOl(User user)
         {
             return View();
         }
