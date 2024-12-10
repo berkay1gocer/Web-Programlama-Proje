@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using odev3.Models;
 
-namespace odev3.Data
+namespace odev3.Models
 {
     public class ApplicationDbContext : DbContext
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
         public DbSet<User> Users { get; set; }
 
     }

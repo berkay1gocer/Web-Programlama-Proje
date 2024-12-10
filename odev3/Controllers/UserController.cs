@@ -24,5 +24,19 @@ namespace odev3.Controllers
         {
             return View();
         }
+
+        public IActionResult KullaniciSayfa()
+        {
+            return View();
+        }
+        public IActionResult RandevuAl()
+        {
+            return View();
+        }
+
+        public IActionResult RandevuYonet()
+        {
+            return View();
+        }
     }
 }
