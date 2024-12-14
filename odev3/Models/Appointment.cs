@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace odev2.Models
+namespace odev3.Models
 {
     public class Appointment
     {
@@ -8,8 +8,10 @@ namespace odev2.Models
 
         [Required]
         [StringLength(100)]
-        public string Name { get; set; } // Kullanıcı Adı
+        public string Kullanici { get; set; } // Kullanıcı Adı
+        public string Berber { get; set; }
 
+        public string Islem { get; set; }
         [Required]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; } // Randevu Tarihi

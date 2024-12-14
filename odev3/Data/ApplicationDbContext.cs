@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using odev3.Models;
 
 namespace odev3.Models
 {
@@ -8,6 +9,7 @@ namespace odev3.Models
         {
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
 
     }
 }

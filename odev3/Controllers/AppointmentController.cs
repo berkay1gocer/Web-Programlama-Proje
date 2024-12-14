@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using odev2.Models;
+using odev3.Models;
 
 namespace odev2.Controllers
 {
