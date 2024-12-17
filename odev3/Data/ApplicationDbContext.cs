@@ -10,6 +10,8 @@ namespace odev3.Models
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Barber> Barbers { get; set; }
+
 
     }
 }
