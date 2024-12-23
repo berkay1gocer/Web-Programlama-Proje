@@ -9,8 +9,7 @@ namespace odev3.Models
         [Required]
         [StringLength(100)]
         public string Kullanici { get; set; } // Kullanıcı Adı
-        public string Berber { get; set; }
-
+        public string BarberId { get; set; }
         public string Islem { get; set; }
         [Required]
         [DataType(DataType.Date)]
