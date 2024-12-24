@@ -17,15 +17,18 @@
 
     <div class="form-group">
         <label for="BarberId">Berber Seçiniz</label>
-        <select asp-for="BarberId" class="form-control" asp-items="ViewBag.BerberList">
+        <select asp-for="BarberId" id="BarberId" class="form-control" asp-items="ViewBag.BerberList">
             <option value="">-- Berber Seçiniz --</option>
         </select>
         <span asp-validation-for="BarberId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Islem">Yapılacak İşlem</label>
-        <input asp-for="Islem" class="form-control" />
+        <label for="UzmanlikId">İşlem Seçiniz</label>
+        <select asp-for="Islem" id="UzmanlikId" class="form-control">
+            <option value="">-- İşlem Seçiniz --</option>
+        </select>
+        <span asp-validation-for="Islem" class="text-danger"></span>
     </div>
 
     <div class="form-group">
@@ -42,3 +45,34 @@
 
     <button type="submit" class="btn btn-primary">Randevu Al</button>
 </form>
+
+<script>
+    document.getElementById('BarberId').addEventListener('change', function () {
+        var barberId = this.value;
+        var uzmanlikDropdown = document.getElementById('UzmanlikId');
+
+        // Dropdown'u temizle
+        uzmanlikDropdown.innerHTML = '<option value="">-- İşlem Seçiniz --</option>';
+
+        if (barberId) {
+            fetch(`/YourController/GetUzmanlik?barberId=${barberId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        data.forEach(function (uzmanlik) {
+                            var option = document.createElement('option');
+                            option.value = uzmanlik.id; // Backend'den dönen uzmanlık ID'si
+                            option.textContent = uzmanlik.name; // Backend'den dönen uzmanlık adı
+                            uzmanlikDropdown.appendChild(option);
+                        });
+                    } else {
+                        uzmanlikDropdown.innerHTML = '<option value="">Uzmanlık bulunamadı</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                    uzmanlikDropdown.innerHTML = '<option value="">Bir hata oluştu</option>';
+                });
+        }
+    });
+</script>

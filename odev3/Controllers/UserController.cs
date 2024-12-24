@@ -94,10 +94,18 @@ namespace odev3.Controllers
                 .Select(b => new SelectListItem
                 {
                     Value = b.Id.ToString(), // ID değerini burada kullanıyoruz
-                    Text = $"{b.Ad} - {b.Uzmanlik}" // Görünen kısım: Ad ve Uzmanlık
+                    Text = $"{b.Ad}" // Görünen kısım: Ad ve Uzmanlık
                 }).ToList();
 
             ViewBag.BerberList = berberList;
+            var uzmanlikList = _context.Barbers
+                .Select(b => new SelectListItem
+                {
+                    Value = b.Id.ToString(), // ID değerini burada kullanıyoruz
+                    Text = $"{b.Uzmanlik}" // Görünen kısım: Ad ve Uzmanlık
+                }).ToList();
+
+            ViewBag.UzmanlikList = uzmanlikList;
             return View();
         }
 
@@ -126,11 +134,34 @@ namespace odev3.Controllers
                 .Select(b => new SelectListItem
                 {
                     Value = b.Id.ToString(),
-                    Text = $"{b.Ad} - {b.Uzmanlik}"
+                    Text = $"{b.Ad}"
                 }).ToList();
             ViewBag.BerberList = berberList;
+            var uzmanlikList = _context.Barbers
+              .Select(b => new SelectListItem
+              {
+                  Value = b.Id.ToString(), // ID değerini burada kullanıyoruz
+                  Text = $"{b.Uzmanlik}" // Görünen kısım: Ad ve Uzmanlık
+              }).ToList();
+
+            ViewBag.UzmanlikList = uzmanlikList;
 
             return View(appointment);
+        }
+
+        [HttpGet]
+        public JsonResult GetUzmanlik(int barberId)
+        {
+            var Islem = _context.Islem // Uzmanlık tablosu üzerinden işlem yapıyoruz
+                .Where(u => u.Barber == barberId) // Seçilen berbere ait işlemleri getir
+                .Select(u => new
+                {
+                    id = u.Id,
+                    name = u.Name
+                })
+                .ToList();
+
+            return Json(Islem);
         }
 
         // Randevu Yönetimi
