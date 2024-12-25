@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace odev3.Controllers
 {
     public class UserController : Controller
@@ -51,7 +50,6 @@ namespace odev3.Controllers
                     ModelState.AddModelError("", $"Bir hata oluştu: {ex.Message}");
                 }
             }
-
             return View(user);
         }
 
@@ -70,13 +68,11 @@ namespace odev3.Controllers
             {
                 // Başarılı giriş
                 TempData["SuccessMessage"] = "Giriş başarılı!";
-
-
                 return RedirectToAction("KullaniciSayfa");
             }
 
             // Hatalı giriş
-            ModelState.AddModelError("", "E-posta veya şifre hatalı.");
+            ModelState.AddModelError("", "Kullanıcı adı veya şifre hatalı.");
             return View();
         }
 
@@ -93,36 +89,28 @@ namespace odev3.Controllers
             var berberList = _context.Barbers
                 .Select(b => new SelectListItem
                 {
-                    Value = b.Id.ToString(), // ID değerini burada kullanıyoruz
-                    Text = $"{b.Ad}" // Görünen kısım: Ad ve Uzmanlık
+                    Value = b.Id.ToString(), // Barber ID
+                    Text = $"{b.Ad}" // Berber Adı
                 }).ToList();
 
             ViewBag.BerberList = berberList;
-            var uzmanlikList = _context.Barbers
-                .Select(b => new SelectListItem
-                {
-                    Value = b.Id.ToString(), // ID değerini burada kullanıyoruz
-                    Text = $"{b.Uzmanlik}" // Görünen kısım: Ad ve Uzmanlık
-                }).ToList();
-
-            ViewBag.UzmanlikList = uzmanlikList;
             return View();
         }
 
         // Randevu Al POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult RandevuAl(Appointment appointment)
+        public async Task<IActionResult> RandevuAl(Appointment appointment)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Appointments.Add(appointment);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
 
                     TempData["SuccessMessage"] = "Randevunuz başarıyla alındı!";
-                    return RedirectToAction("RandevuAl");
+                    return RedirectToAction("KullaniciSayfa");
                 }
                 catch (Exception ex)
                 {
@@ -130,44 +118,34 @@ namespace odev3.Controllers
                 }
             }
 
+            // Eğer işlem başarısızsa, berber listesi tekrar yüklenir
             var berberList = _context.Barbers
                 .Select(b => new SelectListItem
                 {
                     Value = b.Id.ToString(),
                     Text = $"{b.Ad}"
                 }).ToList();
+
             ViewBag.BerberList = berberList;
-            var uzmanlikList = _context.Barbers
-              .Select(b => new SelectListItem
-              {
-                  Value = b.Id.ToString(), // ID değerini burada kullanıyoruz
-                  Text = $"{b.Uzmanlik}" // Görünen kısım: Ad ve Uzmanlık
-              }).ToList();
-
-            ViewBag.UzmanlikList = uzmanlikList;
-
             return View(appointment);
         }
 
+        // Ajax çağrısı: Uzmanlık Listesi
         [HttpGet]
         public JsonResult GetUzmanlik(int barberId)
         {
-            var Islem = _context.Islem // Uzmanlık tablosu üzerinden işlem yapıyoruz
-                .Where(u => u.Barber == barberId) // Seçilen berbere ait işlemleri getir
-                .Select(u => new
-                {
-                    id = u.Id,
-                    name = u.Name
-                })
+            var uzmanliklar = _context.Barbers
+                .Where(b => b.Id == barberId)
+                .Select(b => b.Uzmanlik)
                 .ToList();
 
-            return Json(Islem);
+            return Json(uzmanliklar);
         }
 
         // Randevu Yönetimi
         public IActionResult RandevuYonet()
         {
-            var randevular = _context.Appointments.ToList();
+            var randevular = _context.Appointments.Include(a => a.Barber).ToList();
             return View(randevular);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace odev3.Models
 {
@@ -8,9 +9,16 @@ namespace odev3.Models
 
         [Required]
         [StringLength(100)]
-        public string Kullanici { get; set; } // Kullanıcı Adı
-        public string BarberId { get; set; }
-        public string Islem { get; set; }
+        public string KullaniciAdi { get; set; } // Kullanıcı Adı
+
+        [Required]
+        public int BarberId { get; set; } // Foreign Key
+
+        public Barber? Barber { get; set; } // Navigation Property
+
+        [Required]
+        public string Islem { get; set; } // İşlem bilgisi
+
         [Required]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; } // Randevu Tarihi
