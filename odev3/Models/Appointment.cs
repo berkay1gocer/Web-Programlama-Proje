@@ -9,7 +9,7 @@ namespace odev3.Models
 
         [Required]
         [StringLength(100)]
-        public string KullaniciAdi { get; set; } // Kullanıcı Adı
+        public string Kullanici { get; set; } // Kullanıcı Adı
 
         [Required]
         public int BarberId { get; set; } // Foreign Key

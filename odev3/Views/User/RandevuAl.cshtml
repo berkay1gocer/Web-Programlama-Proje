@@ -1,78 +1,24 @@
-﻿@model odev3.Models.Appointment
+﻿<form asp-action="RandevuAl" method="post">
+    <input type="hidden" name="kullaniciId" value="@User.Identity.GetUserId()" />
 
-@{
-    ViewData["Title"] = "Randevu Al";
-}
-
-<h2>Randevu Al</h2>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-
-<form asp-action="RandevuAl" method="post">
-
-    <div class="form-group">
-        <label for="BarberId">Berber Seçiniz</label>
-        <select asp-for="BarberId" id="BarberId" class="form-control" asp-items="ViewBag.BerberList">
-            <option value="">-- Berber Seçiniz --</option>
-        </select>
-        <span asp-validation-for="BarberId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="UzmanlikId">İşlem Seçiniz</label>
-        <select asp-for="Islem" id="UzmanlikId" class="form-control">
-            <option value="">-- İşlem Seçiniz --</option>
-        </select>
-        <span asp-validation-for="Islem" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Date">Randevu Tarihi</label>
-        <input asp-for="Date" class="form-control" type="date" />
-        <span asp-validation-for="Date" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Time">Randevu Saati</label>
-        <input asp-for="Time" class="form-control" type="time" />
-        <span asp-validation-for="Time" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Randevu Al</button>
-</form>
-
-<script>
-    document.getElementById('BarberId').addEventListener('change', function () {
-        var barberId = this.value;
-        var uzmanlikDropdown = document.getElementById('UzmanlikId');
-
-        // Dropdown'u temizle
-        uzmanlikDropdown.innerHTML = '<option value="">-- İşlem Seçiniz --</option>';
-
-        if (barberId) {
-            fetch(`/YourController/GetUzmanlik?barberId=${barberId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.length > 0) {
-                        data.forEach(function (uzmanlik) {
-                            var option = document.createElement('option');
-                            option.value = uzmanlik.id; // Backend'den dönen uzmanlık ID'si
-                            option.textContent = uzmanlik.name; // Backend'den dönen uzmanlık adı
-                            uzmanlikDropdown.appendChild(option);
-                        });
-                    } else {
-                        uzmanlikDropdown.innerHTML = '<option value="">Uzmanlık bulunamadı</option>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Hata:', error);
-                    uzmanlikDropdown.innerHTML = '<option value="">Bir hata oluştu</option>';
-                });
+    <label for="barberId">Berber:</label>
+    <select id="barberId" name="barberId">
+        @foreach (var berber in ViewBag.Berberler)
+        {
+            <option value="@berber.Id">@berber.Name</option>
         }
-    });
-</script>
+    </select>
+
+    <label for="islemId">İşlem:</label>
+    <select id="islemId" name="islemId">
+        @foreach (var islem in ViewBag.Islemler)
+        {
+            <option value="@islem.Id">@islem.Name</option>
+        }
+    </select>
+
+    <label for="tarihSaat">Tarih ve Saat:</label>
+    <input type="datetime-local" id="tarihSaat" name="tarihSaat" required />
+
+    <button type="submit">Randevu Al</button>
+</form>

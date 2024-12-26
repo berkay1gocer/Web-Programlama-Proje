@@ -1,0 +1,25 @@
+﻿@model IEnumerable<dynamic>
+
+<h2>Randevularım</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Kullanıcı Adı</th>
+            <th>Tarih</th>
+            <th>Saat</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var randevu in Model)
+        {
+                <tr>
+                    <td>@randevu.Id</td>
+                    <td>@randevu.KullaniciAd</td>
+                    <td>@randevu.AppointmentDate.ToShortDateString()</td>
+                    <td>@randevu.AppointmentTime</td>
+                </tr>
+        }
+    </tbody>
+</table>
+<a href="@Url.Action("Index", "Barber")" class="btn btn-primary">Geri Dön</a>

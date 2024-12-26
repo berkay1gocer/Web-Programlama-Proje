@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using odev3.Models;
 using odev3.Views;
 
@@ -15,6 +16,8 @@ namespace odev3.Models
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Barber> Barbers { get; set; }
 
+        public DbSet<Service> Services { get; set; }
+
         // Model ilişkileri
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,5 +31,11 @@ namespace odev3.Models
             base.OnModelCreating(modelBuilder);
         }
 
+        // Services tanımı
+        public static void AddServices(IServiceCollection services, string connectionString)
+        {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString)); // SQL Server için bağlantı dizesi
+        }
     }
 }

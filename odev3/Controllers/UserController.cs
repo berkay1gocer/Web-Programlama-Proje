@@ -81,72 +81,56 @@ namespace odev3.Controllers
         {
             return View();
         }
-
-        // Randevu Al Sayfası GET
         [HttpGet]
         public IActionResult RandevuAl()
         {
-            var berberList = _context.Barbers
-                .Select(b => new SelectListItem
-                {
-                    Value = b.Id.ToString(), // Barber ID
-                    Text = $"{b.Ad}" // Berber Adı
-                }).ToList();
+            // Berber ve işlem listelerini View'e gönderiyoruz
+            var berberler = _context.Barbers.ToList();
+            var islemler = _context.Services.ToList();
 
-            ViewBag.BerberList = berberList;
+            ViewBag.Berberler = berberler;
+            ViewBag.Islemler = islemler;
+
             return View();
         }
 
-        // Randevu Al POST
+        // POST: RandevuAl
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RandevuAl(Appointment appointment)
+        public IActionResult RandevuAl(int kullaniciId, int barberId, int islemId, DateTime tarihSaat)
         {
-            if (ModelState.IsValid)
+            // Tarih ve saat kontrolü yapılabilir
+            if (tarihSaat < DateTime.Now)
             {
-                try
-                {
-                    _context.Appointments.Add(appointment);
-                    await _context.SaveChangesAsync();
-
-                    TempData["SuccessMessage"] = "Randevunuz başarıyla alındı!";
-                    return RedirectToAction("KullaniciSayfa");
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $"Bir hata oluştu: {ex.Message}");
-                }
+                ModelState.AddModelError("tarihSaat", "Geçmiş bir tarih seçemezsiniz.");
+                return RedirectToAction("RandevuAl");
             }
 
-            // Eğer işlem başarısızsa, berber listesi tekrar yüklenir
-            var berberList = _context.Barbers
-                .Select(b => new SelectListItem
-                {
-                    Value = b.Id.ToString(),
-                    Text = $"{b.Ad}"
-                }).ToList();
+            // Aynı tarih ve saat için çakışma kontrolü
+            bool randevuVarMi = _context.Appointments.Any(a => a.BarberId == barberId && a.DateTime == tarihSaat);
 
-            ViewBag.BerberList = berberList;
-            return View(appointment);
+            if (randevuVarMi)
+            {
+                ModelState.AddModelError("tarihSaat", "Bu tarih ve saat için berber zaten dolu.");
+                return RedirectToAction("RandevuAl");
+            }
+
+            // Randevu kaydı oluştur
+            var yeniRandevu = new Appointment
+            {
+                Kullanici = kullanici,
+                BarberId = barberId,
+                Islem = islem,
+                DateTime = tarihSaat
+            };
+
+            _context.Appointments.Add(yeniRandevu);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Randevu başarıyla alındı!";
+            return RedirectToAction("Randevularim");
         }
 
-        // Ajax çağrısı: Uzmanlık Listesi
-        [HttpGet]
-        public JsonResult GetUzmanlik(int barberId)
-        {
-            var uzmanliklar = _context.Barbers
-                .Where(b => b.Id == barberId)
-                .Select(b => b.Uzmanlik)
-                .ToList();
 
-            return Json(uzmanliklar);
-        }
 
-        // Randevu Yönetimi
-        public IActionResult RandevuYonet()
-        {
-            var randevular = _context.Appointments.Include(a => a.Barber).ToList();
-            return View(randevular);
-        }
     }
 }
