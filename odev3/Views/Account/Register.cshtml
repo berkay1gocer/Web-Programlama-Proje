@@ -1,37 +1,21 @@
-﻿@model odev3.Models.User
+﻿@model odev3.Models.RegisterViewModel
 
-@{
-    ViewData["Title"] = "Üye Ol";
-}
-
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header text-center bg-success text-white">
-                </div>
-                <div class="card-body">
-                    <!-- ASP.NET Form -->
-                    <form asp-action="Register" asp-controller="Account" method="post">
-                        <div class="mb-3">
-                            <label asp-for="Username" class="form-label"></label>
-                            <input asp-for="Username" class="form-control" placeholder="Kullanıcı adınızı girin" />
-                            <span asp-validation-for="Username" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="Password" class="form-label"></label>
-                            <input asp-for="Password" type="password" class="form-control" placeholder="Şifrenizi girin" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success">Üye Ol</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <p>Zaten bir hesabınız var mı? <a asp-controller="Account" asp-action="Login">Giriş Yap</a></p>
-                </div>
-            </div>
-        </div>
+<form asp-action="Register" method="post">
+    <div class="form-group">
+        <label for="Username">Kullanıcı Adı</label>
+        <input type="text" class="form-control" id="Username" name="Username" asp-for="Username" required />
     </div>
-</div>
+    <div class="form-group">
+        <label for="Email">E-posta</label>
+        <input type="email" class="form-control" id="Email" name="Email" asp-for="Email" required />
+    </div>
+    <div class="form-group">
+        <label for="Password">Şifre</label>
+        <input type="password" class="form-control" id="Password" name="Password" asp-for="Password" required />
+    </div>
+    <div class="form-group">
+        <label for="ConfirmPassword">Şifreyi Tekrar Girin</label>
+        <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" asp-for="ConfirmPassword" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Üye Ol</button>
+</form>

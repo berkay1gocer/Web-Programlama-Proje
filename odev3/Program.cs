@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using odev3.Data;
 using odev3.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 // DbContext'i SQL Server ile yapýlandýrma
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+	.AddEntityFrameworkStores<ApplicationDbContext>()
+	.AddDefaultTokenProviders();
+
 
 // MVC desteðini ekle
 builder.Services.AddControllersWithViews();
@@ -27,7 +34,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

@@ -1,118 +1,125 @@
 ﻿@{
-    var currentPage = ViewContext.RouteData.Values["Action"]?.ToString();
+	var currentPage = ViewContext.RouteData.Values["Action"]?.ToString();
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Kuaför Sistemi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Navbar Özelleştirmesi */
-        .navbar-custom {
-            background-color: white;
-            border-bottom: 2px solid #f4f4f4;
-        }
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Kuaför Sistemi</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		/* Navbar Özelleştirmesi */
+		.navbar-custom {
+			background-color: white;
+			border-bottom: 2px solid #f4f4f4;
+		}
 
-            .navbar-custom .navbar-brand {
-                font-size: 2rem;
-                color: black;
-                font-weight: bold;
-            }
+			.navbar-custom .navbar-brand {
+				font-size: 2rem;
+				color: black;
+				font-weight: bold;
+			}
 
-            .navbar-custom .navbar-nav .nav-link {
-                color: black;
-                font-size: 1.2rem;
-                padding: 10px 15px;
-                text-transform: uppercase;
-            }
+			.navbar-custom .navbar-nav .nav-link {
+				color: black;
+				font-size: 1.2rem;
+				padding: 10px 15px;
+				text-transform: uppercase;
+			}
 
-                .navbar-custom .navbar-nav .nav-link:hover {
-                    color: #f39c12;
-                }
+				.navbar-custom .navbar-nav .nav-link:hover {
+					color: #f39c12;
+				}
 
-            .navbar-custom .btn {
-                color: white;
-                background-color: #f39c12;
-                font-size: 1.2rem;
-                border: none;
-            }
+			.navbar-custom .btn {
+				color: white;
+				background-color: #f39c12;
+				font-size: 1.2rem;
+				border: none;
+			}
 
-                .navbar-custom .btn:hover {
-                    background-color: #e67e22;
-                }
+				.navbar-custom .btn:hover {
+					background-color: #e67e22;
+				}
 
-        footer {
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-    </style>
+		footer {
+			background-color: #f4f4f4;
+			padding: 20px;
+		}
+	</style>
 </head>
 <body>
-    <header>
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-custom">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">Berber</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/">Ana Sayfa</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/About">Hakkımızda</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Services">Hizmetlerimiz</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Appointment">Randevu Al</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Contact">İletişim</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="d-flex">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <a href="/Account/Profile" class="btn me-2">Profil</a>
-                        <a href="/Account/Logout" class="btn">Çıkış Yap</a>
-                    }
-                    else
-                    {
-                        <a href="/Account/Login" class="btn me-2">Giriş Yap</a>
-                        <a href="/Account/Register" class="btn">Üye Ol</a>
-                    }
-                </div>
-            </div>
-        </nav>
-        <!-- Çalışma Saatleri -->
-        @if (currentPage == "Index")
-        {
-            <div class="container working-hours text-center mt-3">
-                <h2>Çalışma Saatlerimiz</h2>
-                <ul class="list-group list-group-flush mt-3">
-                    <li class="list-group-item">Pazartesi - Cuma: 09:00 - 19:00</li>
-                    <li class="list-group-item">Cumartesi: 10:00 - 18:00</li>
-                    <li class="list-group-item">Pazar: Kapalı</li>
-                </ul>
-            </div>
-        }
-    </header>
-    <main class="container mt-3">
-        @RenderBody()
-    </main>
-    <footer class="text-center py-3">
-        <p>&copy; 2024 Kuaför Yönetim Sistemi</p>
-        <p>Adres: Örnek Mah. Kuaför Cad. No:1, 12345 İstanbul</p>
-        <p>Telefon: +90 555 123 45 67</p>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<header>
+		<!-- Navbar -->
+		<nav class="navbar navbar-expand-lg navbar-custom">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/">Berber</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+					<ul class="navbar-nav">
+						<li class="nav-item">
+							<a class="nav-link active" aria-current="page" href="/">Ana Sayfa</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/About">Hakkımızda</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/Services">Hizmetlerimiz</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/Appointment">Randevu Al</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/Contact">İletişim</a>
+						</li>
+					</ul>
+				</div>
+				@{
+					var username = HttpContextAccessor.HttpContext.Session.GetString("Username");
+				}
+
+				<div class="d-flex">
+					@if (!string.IsNullOrEmpty(username))
+					{
+						<span class="navbar-text me-3">Hoş geldiniz, @username!</span>
+						<a href="/Account/Profile" class="btn me-2">Profil</a>
+						<a href="/Account/Logout" class="btn">Çıkış Yap</a>
+					}
+					else
+					{
+						<a href="/Account/Login" class="btn me-2">Giriş Yap</a>
+						<a href="/Account/Register" class="btn">Üye Ol</a>
+					}
+				</div>
+
+
+			</div>
+		</nav>
+		<!-- Çalışma Saatleri -->
+		@if (currentPage == "Index")
+		{
+			<div class="container working-hours text-center mt-3">
+				<h2>Çalışma Saatlerimiz</h2>
+				<ul class="list-group list-group-flush mt-3">
+					<li class="list-group-item">Pazartesi - Cuma: 09:00 - 19:00</li>
+					<li class="list-group-item">Cumartesi: 10:00 - 18:00</li>
+					<li class="list-group-item">Pazar: Kapalı</li>
+				</ul>
+			</div>
+		}
+	</header>
+	<main class="container mt-3">
+		@RenderBody()
+	</main>
+	<footer class="text-center py-3">
+		<p>&copy; 2024 Kuaför Yönetim Sistemi</p>
+		<p>Adres: Örnek Mah. Kuaför Cad. No:1, 12345 İstanbul</p>
+		<p>Telefon: +90 555 123 45 67</p>
+	</footer>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

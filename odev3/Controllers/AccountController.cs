@@ -1,75 +1,89 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using odev3.Data;
 using odev3.Models;
+using System.Threading.Tasks;
 
 namespace odev3.Controllers
 {
     public class AccountController : Controller
-    {
+	{
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly SignInManager<ApplicationUser> _signInManager;
 
-        private readonly ApplicationDbContext _context;
-        public AccountController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+		public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+		{
+			_userManager = userManager;
+			_signInManager = signInManager;
+		}
 
-		// Giriş Sayfası
+		// Giriş Sayfası (GET)
 		[HttpGet]
 		public IActionResult Login()
 		{
 			return View();
 		}
 
+		// Giriş Sayfası (POST)
 		[HttpPost]
-		public IActionResult Login(User us)
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Login(LoginViewModel model)
 		{
 			if (ModelState.IsValid)
 			{
-				// Kullanıcıyı veritabanında arıyoruz
-				var user = _context.Users.FirstOrDefault(u => u.Username == us.Username);
-
-				if (user != null && user.Password == us.Password)
+				var user = await _userManager.FindByNameAsync(model.Username);
+				if (user != null)
 				{
-					// Giriş başarılı, kullanıcıyı oturum açmış olarak işaretleyelim (örneğin Session kullanarak)
-					//HttpContext.Session.SetString("Username", user.Username);
-					return RedirectToAction("KullaniciSayfa", "User");  // Giriş başarılı, ana sayfaya yönlendir
+					var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+					if (result.Succeeded)
+					{
+						return RedirectToAction("Index", "Home");
+					}
 				}
-				else
+
+				ModelState.AddModelError(string.Empty, "Geçersiz giriş.");
+			}
+
+			return View(model);
+		}
+
+		// Kayıt Sayfası (GET)
+		[HttpGet]
+		public IActionResult Register()
+		{
+			return View();
+		}
+
+		// Kayıt Sayfası (POST)
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Register(RegisterViewModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
+				var result = await _userManager.CreateAsync(user, model.Password);
+
+				if (result.Succeeded)
 				{
-					// Kullanıcı adı veya şifre hatalı olduğunda hata mesajı ekle
-					ModelState.AddModelError("", "Kullanıcı adı veya şifre hatalı");
+					await _signInManager.SignInAsync(user, isPersistent: false);
+					return RedirectToAction("Index", "Home");
+				}
+
+				foreach (var error in result.Errors)
+				{
+					ModelState.AddModelError(string.Empty, error.Description);
 				}
 			}
 
-			// ModelState geçerli değilse veya hata varsa, Login formunu yeniden göster
-			return View(us);
+			return View(model);
 		}
-		// Üye Ol Sayfası
-		[HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
 
-        [HttpPost]
-        public IActionResult Register(User user)
-        {
-            if (ModelState.IsValid)
-            {
-                // Şifreyi hash'lemek istiyorsanız burada yapabilirsiniz (ör. BCrypt veya ASP.NET Identity).
-
-                // Kullanıcıyı veritabanına ekle
-                _context.Users.Add(user);
-                _context.SaveChanges();
-
-                // Başarılı kayıt sonrası yönlendirme
-                return RedirectToAction("Login", "Account");
-            }
-
-            else
-            {
-                return View(user);
-            }
-            
-        }
-    }
+		// Çıkış Yapma
+		public async Task<IActionResult> Logout()
+		{
+			await _signInManager.SignOutAsync();
+			return RedirectToAction("Index", "Home");
+		}
+	}
 }
